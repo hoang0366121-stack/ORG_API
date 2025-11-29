@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 import models, schemas
 from database import get_db
 from typing import List
+from utils import save_to_file
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -13,6 +14,19 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
     print(f"✅ Created User: {new_user.name}")
+    # 🔥 Lưu tất cả users ra file JSON
+    users = db.query(models.User).all()
+    data = [
+        {
+            "id": u.id,
+            "name": u.name,
+            "department_id": u.department_id,
+            "position_id": u.position_id
+        }
+        for u in users
+    ]
+    save_to_file("users_backup.json", data)
+    
     return new_user
 
 @router.get("/", response_model=List[schemas.User])

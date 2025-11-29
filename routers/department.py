@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List
 import models, schemas
 from database import get_db
+from utils import save_to_file
 
 router = APIRouter(prefix="/departments", tags=["Departments"])
 
@@ -14,6 +15,11 @@ def create_department(dept: schemas.DepartmentCreate, db: Session = Depends(get_
     db.commit()
     db.refresh(new_dept)
     print(f"✅ Created Department: {new_dept.name}")
+    # 🔥 Lưu tất cả department ra file JSON
+    departments = db.query(models.Department).all()
+    data = [{"id": d.id, "name": d.name, "parent_id": d.parent_id} for d in departments]
+    save_to_file("departments_backup.json", data)
+    
     return new_dept
 
 # 🟢 Lấy tất cả phòng ban

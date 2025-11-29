@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
 import models, schemas
+from utils import save_to_file
 
 router = APIRouter(prefix="/positions", tags=["Positions"])
 
@@ -23,6 +24,12 @@ def create_position(position: schemas.PositionCreate, db: Session = Depends(get_
     db.commit()
     db.refresh(new_position)
     print(f"✅ Created Position: {new_position.title}")
+    
+     # 🔥 Lưu tất cả positions ra file JSON
+    positions = db.query(models.Position).all()
+    data = [{"id": p.id, "title": p.title} for p in positions]
+    save_to_file("positions_backup.json", data)
+    
     return new_position
 
 @router.put("/{position_id}", response_model=schemas.Position)
