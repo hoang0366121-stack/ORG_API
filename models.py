@@ -12,12 +12,14 @@ class Department(Base):
     parent = relationship("Department", remote_side=[id], backref="children")
     users = relationship("User", back_populates="department")
 
+
 class Position(Base):
     __tablename__ = "positions"
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, nullable=False)
     users = relationship("User", back_populates="position")
+
 
 class User(Base):
     __tablename__ = "users"
