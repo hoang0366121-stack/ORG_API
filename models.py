@@ -28,10 +28,7 @@ class User(Base):
     name = Column(String, nullable=False)
 #code thêm
 
-    sex = Column(
-        Enum ("Nam", "Nu",name ="users_sex" ),
-        nullable = False
-    )
+    sex = Column(Enum ("Nam", "Nu",name ="users_sex" ),nullable = False)
     date_of_birth = Column(Date, nullable=False )
     start_date = Column(Date, nullable=False  )
                 

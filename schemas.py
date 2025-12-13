@@ -1,6 +1,34 @@
 from __future__ import annotations
 from pydantic import BaseModel, Field
 from typing import List, Optional
+from enum import Enum
+from datetime import date
+
+
+# User
+class UserBase(BaseModel):
+    name: str
+    sex: SexEnum
+    start_date : date
+    date_of_birth: date
+    department_id: Optional[int]
+    position_id: Optional[int]
+
+#
+class SexEnum(str, Enum):
+    Nam = "Nam"
+    Nu = "Nu"
+#
+class UserCreate(UserBase):
+    pass
+
+class User(UserBase):
+    id: int
+    position: Optional[Position]
+    department: Optional[Department]
+    class Config:
+        from_attributes = True
+
 
 # Position
 class PositionBase(BaseModel):
@@ -11,25 +39,6 @@ class PositionCreate(PositionBase):
 
 class Position(PositionBase):
     id: int
-    class Config:
-        from_attributes = True
-
-# User
-class UserBase(BaseModel):
-    name: str
-    sex: str
-    start_date : date
-    department_id: Optional[int]
-    position_id: Optional[int]
-
-class UserCreate(UserBase):
-    pass
-
-class User(UserBase):
-    id: int
-    sex: str
-    start_date: date
-    position: Optional[Position]
     class Config:
         from_attributes = True
 
@@ -49,3 +58,6 @@ class Department(DepartmentBase):
     class Config:
         from_attributes = True
 
+User.model_rebuild()
+UserCreate.model_rebuild()
+UserBase.model_rebuild()
